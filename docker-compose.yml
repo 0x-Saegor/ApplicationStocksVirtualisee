@@ -1,11 +1,59 @@
 services:
-  backend:
-    build: ./backend
+  # API de gestion des clients (TP2) -> http://localhost:8000/docs
+  clients:
+    build: ./clients
     ports:
       - "8000:8000"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    depends_on:
+      - mysql
+    networks:
+      - carpart-net
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - carpart-net
+
+  # API de gestion du stock (TP1) -> http://localhost:8001/docs
+  stock:
+    build: ./stock
+    ports:
+      - "8001:8000"
+    environment:
+      MONGO_URL: ${MONGO_URL}
     depends_on:
       - mongo
+    networks:
+      - carpart-net
+
   mongo:
     image: mongo:latest
     ports:
       - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - carpart-net
+
+networks:
+  carpart-net:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  mongo-data:

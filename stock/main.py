@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
@@ -10,7 +12,7 @@ app = FastAPI(
     version="1.0.0",
     contact={"name": "IUT - Virtualisation TP1"},
 )
-client = MongoClient("mongodb://mongo:27017/")
+client = MongoClient(os.getenv("MONGO_URL", "mongodb://mongo:27017/"))
 db = client.products_database
 
 # Schéma d'un produit
