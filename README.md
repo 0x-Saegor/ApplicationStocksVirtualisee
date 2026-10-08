@@ -1,54 +1,34 @@
-# CarPart – Application de stocks virtualisée
+# CarPart - TP Virtualisation
 
-Deux API FastAPI conteneurisées :
+Deux API FastAPI dans des conteneurs :
 
-- **clients** (TP2) : gestion des clients, base MySQL → http://localhost:8000/docs
-- **stock** (TP1) : gestion des produits, base MongoDB → http://localhost:8001/docs
+- `clients` : gestion des clients, avec MySQL (port 8000)
+- `stock` : gestion des produits, avec MongoDB (port 8001)
 
-## Liens du projet
+## Liens
 
-| | URL |
-|---|---|
-| Dépôt Git (code source + docker-compose) | https://github.com/0x-Saegor/ApplicationStocksVirtualisee |
-| Docker Hub | https://hub.docker.com/u/saegor |
-| Docker Hub – image clients | https://hub.docker.com/r/saegor/carpart-clients |
-| Docker Hub – image stock | https://hub.docker.com/r/saegor/carpart-stock |
+- GitHub : https://github.com/0x-Saegor/ApplicationStocksVirtualisee
+- Docker Hub : https://hub.docker.com/u/saegor
+  - https://hub.docker.com/r/saegor/carpart-clients
+  - https://hub.docker.com/r/saegor/carpart-stock
 
-## Arborescence
-
-```
-.
-├── clients/                 # API clients (FastAPI + MySQL) + Dockerfile
-├── stock/                   # API stock (FastAPI + MongoDB) + Dockerfile
-├── usercommand/seed.sh      # script pour peupler / vider la base clients via l'API
-├── docker-compose.yml       # build local des images
-├── docker-compose.hub.yml   # utilise les images publiées sur Docker Hub
-├── .env                     # variables de connexion aux bases
-└── .github/workflows/ci.yml # tests + build/push des images (Docker Hub et GHCR)
-```
-
-## Récupérer le projet
+## Lancer le projet
 
 ```bash
 git clone https://github.com/0x-Saegor/ApplicationStocksVirtualisee.git
 cd ApplicationStocksVirtualisee
-```
-
-## Lancement
-
-Build local :
-
-```bash
 docker compose up -d --build
 ```
 
-Avec les images du Docker Hub (sans build) :
+Pour utiliser directement les images du Docker Hub :
 
 ```bash
 docker compose -f docker-compose.hub.yml up -d
 ```
 
-Peupler la base clients :
+Les docs Swagger sont sur http://localhost:8000/docs et http://localhost:8001/docs.
+
+Pour remplir la base clients avec des données de test :
 
 ```bash
 ./usercommand/seed.sh
@@ -56,7 +36,4 @@ Peupler la base clients :
 
 ## CI
 
-À chaque push sur `main`, la CI :
-
-1. teste les deux API (CRUD complet via `curl`) contre une vraie base MySQL / MongoDB ;
-2. build et pousse les images `carpart-clients` et `carpart-stock` sur Docker Hub (`docker/build-push-action`) et sur GHCR (`buildah`).
+La CI GitHub Actions teste les deux API puis build et push les images sur Docker Hub (et sur ghcr avec buildah).

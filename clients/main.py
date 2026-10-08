@@ -13,7 +13,6 @@ app = FastAPI(
     contact={"name": "IUT - Virtualisation TP2"},
 )
 
-# Paramètres de connexion lus depuis les variables d'environnement.
 DB_CONFIG = {
     "host": os.getenv("MYSQL_HOST", "mysql"),
     "port": int(os.getenv("MYSQL_PORT", "3306")),
@@ -28,7 +27,7 @@ def get_connection():
 
 
 def init_database():
-    # MySQL peut mettre quelques secondes à démarrer : on réessaie.
+    # mysql met du temps a demarrer
     for _ in range(30):
         try:
             conn = get_connection()
@@ -58,7 +57,6 @@ def on_startup():
     init_database()
 
 
-# Schéma d'un client
 class Client(BaseModel):
     nom: str = Field(..., description="Nom du client", examples=["Durand"])
     prenom: str = Field(..., description="Prénom du client", examples=["Marie"])
@@ -66,7 +64,6 @@ class Client(BaseModel):
     nb_commande: int = Field(0, ge=0, description="Nombre de commandes effectuées", examples=[3])
 
 
-# Création d'un client
 @app.post(
     "/client",
     tags=["Clients"],
@@ -92,7 +89,6 @@ def create_client(client: Client):
     )
 
 
-# Liste des clients
 @app.get(
     "/clients",
     tags=["Clients"],
@@ -110,7 +106,6 @@ def list_clients():
     return JSONResponse(status_code=200, content=clients)
 
 
-# Récupération d'une fiche client
 @app.get(
     "/client/{client_id}",
     tags=["Clients"],
@@ -136,7 +131,6 @@ def get_client(client_id: int):
     return JSONResponse(status_code=404, content={"message": "Client not found"})
 
 
-# Mise à jour d'une fiche client
 @app.put(
     "/client/{client_id}",
     tags=["Clients"],
@@ -163,7 +157,6 @@ def update_client(client_id: int, client: Client):
     return JSONResponse(status_code=404, content={"message": "Client not found"})
 
 
-# Suppression d'un client
 @app.delete(
     "/client/{client_id}",
     tags=["Clients"],

@@ -1,5 +1,4 @@
 services:
-  # API de gestion des clients (TP2) -> http://localhost:8000/docs
   clients:
     build: ./clients
     ports:
@@ -29,7 +28,6 @@ services:
     networks:
       - carpart-net
 
-  # API de gestion du stock (TP1) -> http://localhost:8001/docs
   stock:
     build: ./stock
     ports:

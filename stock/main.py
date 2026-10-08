@@ -15,7 +15,6 @@ app = FastAPI(
 client = MongoClient(os.getenv("MONGO_URL", "mongodb://mongo:27017/"))
 db = client.products_database
 
-# Schéma d'un produit
 class Product(BaseModel):
     nom: str = Field(..., description="Nom du produit", examples=["Clavier"])
     description: str = Field(..., description="Description du produit", examples=["Clavier mécanique"])
@@ -23,7 +22,6 @@ class Product(BaseModel):
     prix: float = Field(..., ge=0, description="Prix unitaire en euros", examples=[49.99])
 
 
-# Création d'un produit
 @app.post(
     "/product",
     tags=["Produits"],
@@ -39,7 +37,6 @@ def create_product(product: Product):
         content={"message": "Product created", "id": str(result.inserted_id)},
     )
 
-# Liste des produits
 @app.get(
     "/products",
     tags=["Produits"],
@@ -54,7 +51,6 @@ def list_products():
         products.append(product)
     return JSONResponse(status_code=200, content=products)
 
-# Mise à jour d'un produit
 @app.put(
     "/product/{product_id}",
     tags=["Produits"],
@@ -66,7 +62,6 @@ def update_product(product_id: str, product: Product):
     db.products.update_one({"_id": ObjectId(product_id)}, {"$set": product.model_dump()})
     return JSONResponse(status_code=200, content={"message": "Product updated"})
 
-# Suppression d'un produit
 @app.delete(
     "/product/{product_id}",
     tags=["Produits"],
@@ -78,7 +73,6 @@ def delete_product(product_id: str):
     db.products.delete_one({"_id": ObjectId(product_id)})
     return JSONResponse(status_code=200, content={"message": "Product deleted"})
 
-# Récupération de la description d'un produit
 @app.get(
     "/product/description/{id}",
     tags=["Produits"],
